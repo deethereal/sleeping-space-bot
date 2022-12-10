@@ -4,6 +4,7 @@
 <b> Stay tuned! </b>
 <br>
 <br>
-<img width="300" src="https://user-images.githubusercontent.com/48176611/206865967-fe594ccb-b09f-42e9-af29-e78b2b2df567.png" alt="Material Bread logo">
+<img width="500" src="https://user-images.githubusercontent.com/48176611/206869124-ffa3e78e-16c2-4866-bee0-581d002b382f.png">
 
 </p>
+
