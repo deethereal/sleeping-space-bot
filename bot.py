@@ -6,12 +6,14 @@ from loguru import logger
 
 from telebot import TeleBot, types  # для указание типов
 from telebot.formatting import escape_markdown
+
 with open("config.yaml") as f:
     cfg = yaml.safe_load(f)
     bot = TeleBot(cfg["token"])
     CHANEL_ID = str(cfg["chanel_id"])
 
 user_message = defaultdict(lambda: defaultdict(int))
+MESSAGE_DELAY = 60
 
 
 @bot.message_handler(commands=["start"])
@@ -27,7 +29,7 @@ def start_message(message):
 @bot.message_handler(content_types=["photo"])
 def handle_docs_photo(message):
     user_id = message.from_user.id
-    if len(user_message[user_id]) < 2 or (time() - user_message[user_id]["last_time"] > 1):
+    if len(user_message[user_id]) < 2 or (time() - user_message[user_id]["last_time"] > MESSAGE_DELAY):
         if user_message[user_id]["handler_trigger"] == 0:
             user_message[user_id]["handler_trigger"] = 1
             user_message[user_id]["message"] = [message]
@@ -42,7 +44,8 @@ def handle_docs_photo(message):
     else:
         text_2_send = (
             "Фото можно отправлять раз в минуту,"
-            f" следующая отправка возможна через {round(60 - (time() - user_message[user_id]['last_time']))} секунд.\n"
+            " следующая отправка возможна через"
+            f" {round(MESSAGE_DELAY - (time() - user_message[user_id]['last_time']))} секунд.\n"
             "Если вы считаете, что возникла ошибка – напишите @deetehreal."
         )
         bot.send_message(message.chat.id, text=text_2_send)
@@ -61,7 +64,7 @@ def callback_worker(call):
             )
 
         result_caption = ""
-        
+
         if caption is not None:
             result_caption += escape_markdown(caption)
         if signiture is not None:
