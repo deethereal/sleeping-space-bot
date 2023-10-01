@@ -1,9 +1,11 @@
+import sys
 from collections import defaultdict
-from time import sleep, time
+from time import time
 
 import yaml
 from loguru import logger
 from requests import ConnectionError, ReadTimeout
+
 from telebot import TeleBot, types  # для указание типов
 from telebot.formatting import escape_markdown
 
@@ -55,6 +57,7 @@ def handle_docs_photo(message):
 def callback_worker(call):
     if call.data == "reset":
         bot.delete_message(call.message.chat.id, call.message.message_id)
+
     else:
         signiture = None
         caption = user_message[call.from_user.id]["message"][0].caption
@@ -96,18 +99,17 @@ def callback_worker(call):
             logger.info(f"Бот открыто отправил картинку от @{call.from_user.username}")
         else:
             logger.info(f"Бот анонимно отправил картинку от @{call.from_user.username}")
-        user_message[call.from_user.id]["handler_trigger"] = 0
         user_message[call.from_user.id]["last_time"] = time()
         bot.edit_message_text(
             chat_id=call.message.chat.id, message_id=call.message.message_id, text="Фото успешно отправлено!"
         )
+    user_message[call.from_user.id]["handler_trigger"] = 0
 
 
 if __name__ == "__main__":
-    while True:
-        try:
-            logger.info("TIME TO WORK")
-            bot.infinity_polling()
-        except (ConnectionError, ReadTimeout) as e:
-            logger.warning(e)
-            sleep(10)
+    try:
+        logger.info("TIME TO WORK")
+        bot.infinity_polling()
+    except (ConnectionError, ReadTimeout) as e:
+        logger.warning(e)
+        sys.exit(1)
