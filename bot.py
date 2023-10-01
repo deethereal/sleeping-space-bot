@@ -107,7 +107,7 @@ if __name__ == "__main__":
     while True:
         try:
             logger.info("TIME TO WORK")
-            bot.infinity_polling(timeout=10, long_polling_timeout=5)
+            bot.infinity_polling()
         except (ConnectionError, ReadTimeout) as e:
             logger.warning(e)
             sleep(10)
