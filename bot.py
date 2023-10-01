@@ -1,9 +1,9 @@
 from collections import defaultdict
-from time import time
+from time import sleep, time
 
 import yaml
 from loguru import logger
-
+from requests import ConnectionError, ReadTimeout
 from telebot import TeleBot, types  # для указание типов
 from telebot.formatting import escape_markdown
 
@@ -103,5 +103,11 @@ def callback_worker(call):
         )
 
 
-logger.info("TIME TO WORK")
-bot.infinity_polling()
+if __name__ == "__main__":
+    while True:
+        try:
+            logger.info("TIME TO WORK")
+            bot.infinity_polling(timeout=10, long_polling_timeout=5)
+        except (ConnectionError, ReadTimeout) as e:
+            logger.warning(e)
+            sleep(10)
