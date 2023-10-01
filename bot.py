@@ -59,9 +59,12 @@ def callback_worker(call):
         signiture = None
         caption = user_message[call.from_user.id]["message"][0].caption
         if call.data == "deanon":
-            signiture = (
-                f"\nПрислал [{call.from_user.first_name} {call.from_user.last_name}](tg://user?id={call.from_user.id})"
-            )
+
+            displayed_name = call.from_user.first_name
+            if call.from_user.last_name is not None:
+                displayed_name += f" {call.from_user.last_name}"
+
+            signiture = f"\nПрислал [{displayed_name}](tg://user?id={call.from_user.id})"
 
         result_caption = ""
 
